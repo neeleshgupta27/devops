@@ -1,0 +1,30 @@
+---
+- name: Create tomcat AWS infrastructure
+  hosts: localhost
+  connection: local
+  roles:
+    - tomcat_aws
+
+- name: Deploy tomcat service
+  hosts: webservers
+  become: yes
+  remote_user: ec2-user
+  become_method: sudo
+  gather_facts: no
+  pre_tasks:
+#    - name: "update yum"
+#      raw: sudo yum update
+    - name: "install python"
+      raw: sudo yum install python2 -y
+    - name: "create short link"
+      raw: sudo ln -s /usr/bin/python2.7 /usr/bin/python
+    - name: "install python2 pip"
+      raw: sudo dnf install python2-pip
+    - name: "install yum module for python"
+      raw: sudo dnf install yum
+    - name: "update yum conf link"
+      raw: sudo ln -s /etc/yum.conf /etc/yum/yum.conf
+  environment:
+    ANSIBLE_CONFIG: "ansible.cfg"
+  roles:
+    - tomcat
