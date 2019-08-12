@@ -18,3 +18,14 @@
     ANSIBLE_CONFIG: "ansible.cfg"
   roles:
     - tomcat
+
+  tasks:
+    - copy:
+       src: /var/lib/jenkins/workspace/E2EProject/target/nvnshoppingcart.war
+       dest: /usr/local/apache-tomcat-8.0.23/webapps/
+       mode: 0777
+       owner: root
+       group: root
+    - name: start tomcat service
+      become: true
+      service: name=tomcat state=started
